@@ -1,0 +1,156 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.17 0.035 265);
+  --foreground: oklch(0.97 0.006 260);
+  --surface: oklch(0.21 0.036 265);
+  --surface-2: oklch(0.25 0.038 266);
+  --card: oklch(0.213 0.036 265);
+  --card-foreground: oklch(0.97 0.006 260);
+  --popover: oklch(0.205 0.036 265);
+  --popover-foreground: oklch(0.97 0.006 260);
+  --primary: oklch(0.63 0.19 276);
+  --primary-foreground: oklch(0.99 0.004 270);
+  --secondary: oklch(0.27 0.038 266);
+  --secondary-foreground: oklch(0.95 0.006 260);
+  --muted: oklch(0.26 0.032 265);
+  --muted-foreground: oklch(0.72 0.022 263);
+  --accent: oklch(0.72 0.14 300);
+  --accent-foreground: oklch(0.17 0.035 265);
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.98 0.004 260);
+  --warning: oklch(0.78 0.14 75);
+  --success: oklch(0.72 0.13 165);
+  --border: oklch(0.32 0.03 266);
+  --input: oklch(0.3 0.03 266);
+  --ring: oklch(0.63 0.19 276);
+  --chart-1: oklch(0.63 0.19 276);
+  --chart-2: oklch(0.72 0.14 300);
+  --chart-3: oklch(0.72 0.13 165);
+  --chart-4: oklch(0.78 0.14 75);
+  --chart-5: oklch(0.68 0.13 230);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@utility surface-panel {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-surface) 92%, transparent),
+      color-mix(in oklab, var(--color-background) 88%, transparent)
+    );
+  border: 1px solid color-mix(in oklab, var(--color-border) 90%, transparent);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 40px -28px oklch(0 0 0 / 0.85);
+  backdrop-filter: blur(10px);
+}
+
+@utility glass-panel {
+  background: color-mix(in oklab, var(--color-surface-2) 55%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-border) 80%, transparent);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(14px);
+}
+
+@utility aurora-bg {
+  background-image:
+    radial-gradient(
+      60rem 30rem at 15% -10%,
+      color-mix(in oklab, var(--color-primary) 30%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      48rem 26rem at 95% 0%,
+      color-mix(in oklab, var(--color-accent) 22%, transparent),
+      transparent 70%
+    );
+}
+
+@utility text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-foreground),
+    color-mix(in oklab, var(--color-accent) 75%, var(--color-foreground))
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility label-caps {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+  font-weight: 600;
+}
