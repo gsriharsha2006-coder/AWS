@@ -48,6 +48,27 @@ export async function listBedrockModels(): Promise<{ reachable: boolean; models:
   }
 }
 
+/**
+ * Genuine Bedrock *runtime* probe: a tiny Converse request. Status is only ever
+ * reported as working when a real inference call succeeds.
+ */
+export async function probeBedrockRuntime(): Promise<{ ok: boolean; detail?: string }> {
+  try {
+    const res = await fetch(`${AWS_GATEWAY}/bedrock-runtime/model/${BEDROCK_MODEL_ID}/converse`, {
+      method: "POST",
+      headers: awsHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({
+        messages: [{ role: "user", content: [{ text: "Reply with OK." }] }],
+        inferenceConfig: { maxTokens: 8 },
+      }),
+    });
+    if (!res.ok) return { ok: false, detail: `Bedrock runtime responded with status ${res.status}.` };
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, detail: error instanceof Error ? error.message : "unknown error" };
+  }
+}
+
 export interface StructuredRequest {
   instructions: string;
   schemaName: string;

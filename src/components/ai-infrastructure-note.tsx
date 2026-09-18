@@ -17,18 +17,21 @@ export function AiInfrastructureNote() {
 
   if (!data) return null;
 
-  const onBedrock = data.provider === "bedrock";
+  const ranOnBedrock = data.provider === "bedrock" && data.bedrockRuntimeOk;
 
   return (
     <div className="mt-5 rounded-lg border border-border bg-surface-2 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
       <p className="label-caps mb-1 text-foreground">What ran this analysis</p>
       <p>
-        {onBedrock
+        {ranOnBedrock
           ? `Amazon Bedrock (${data.region}), model ${data.modelId}.`
           : "Lovable AI (OpenAI GPT-6 Astra) through a secure server-side request."}{" "}
         {data.bedrockReachable
-          ? `Amazon Bedrock is connected to this app — ${data.bedrockModels} models are available to the linked AWS account in ${data.region}.`
-          : "Amazon Bedrock is configured but not reachable from this app right now."}
+          ? `The linked AWS account is connected — ${data.bedrockModels} Amazon Bedrock models are listed in ${data.region}.`
+          : "The linked AWS account is not reachable from this app right now."}{" "}
+        {data.bedrockRuntimeOk
+          ? "Bedrock model inference is available and used first for this analysis."
+          : "Bedrock model inference is not available to this app right now, so the analysis ran on the fallback provider."}
       </p>
       <p className="mt-1">
         Your workspace text is sent server-side only; AWS credentials never reach your browser.

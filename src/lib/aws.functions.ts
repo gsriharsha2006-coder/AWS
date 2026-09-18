@@ -6,15 +6,16 @@ import { createServerFn } from "@tanstack/react-start";
  * status rather than a claim.
  */
 export const getAiInfrastructure = createServerFn({ method: "GET" }).handler(async () => {
-  const { listBedrockModels, selectedProvider, BEDROCK_REGION, BEDROCK_MODEL_ID } = await import(
-    "./ai-provider.server"
-  );
-  const bedrock = await listBedrockModels();
+  const { listBedrockModels, probeBedrockRuntime, selectedProvider, BEDROCK_REGION, BEDROCK_MODEL_ID } =
+    await import("./ai-provider.server");
+  const [bedrock, runtime] = await Promise.all([listBedrockModels(), probeBedrockRuntime()]);
   return {
     provider: selectedProvider(),
     region: BEDROCK_REGION,
     modelId: BEDROCK_MODEL_ID,
     bedrockReachable: bedrock.reachable,
     bedrockModels: bedrock.models,
+    bedrockRuntimeOk: runtime.ok,
+    bedrockRuntimeDetail: runtime.detail ?? null,
   };
 });
