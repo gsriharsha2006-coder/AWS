@@ -38,3 +38,6 @@ dist-ssr
 *.pem
 *.key
 credentials.json
+
+# AWS Amplify Hosting build output
+.amplify-hosting
