@@ -208,6 +208,12 @@ function Workspace() {
                 title="What the review found"
                 description={state.analysis.summary}
               />
+              {state.analysis.aiFallbackNote ? (
+                <p className="mb-4 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+                  {state.analysis.aiFallbackNote}
+                </p>
+              ) : null}
+
               <div className="grid gap-5 md:grid-cols-3">
                 <div>
                   <p className="label-caps mb-2">Weak assumptions</p>

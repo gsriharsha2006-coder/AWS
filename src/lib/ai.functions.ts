@@ -37,7 +37,7 @@ export const analyzeIdea = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => ideaInput.parse(input))
   .handler(async ({ data }) => {
     const { runStructuredAI } = await import("./ai-provider.server");
-    const { raw } = await runStructuredAI({
+    const { raw, provider, fallbackNote } = await runStructuredAI({
       instructions: GUARDRAILS,
       effort: "low",
       schemaName: "idea_analysis",
@@ -85,7 +85,12 @@ export const analyzeIdea = createServerFn({ method: "POST" })
       questions: string[];
       validationActions: string[];
     };
-    return { ...parsed, generatedAt: new Date().toISOString() };
+    return {
+      ...parsed,
+      generatedAt: new Date().toISOString(),
+      aiProvider: provider,
+      aiFallbackNote: fallbackNote,
+    };
   });
 
 const readinessInput = z.object({
@@ -104,7 +109,7 @@ export const generateReadiness = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => readinessInput.parse(input))
   .handler(async ({ data }) => {
     const { runStructuredAI } = await import("./ai-provider.server");
-    const { raw } = await runStructuredAI({
+    const { raw, provider, fallbackNote } = await runStructuredAI({
       instructions:
         GUARDRAILS +
         " Produce an assessment report, not a chat reply. Scores are AI assessments on a 0-100 scale, not precise measurements.",
@@ -174,6 +179,8 @@ export const generateReadiness = createServerFn({ method: "POST" })
       category: data.category,
       stage: data.stage,
       generatedAt: new Date().toISOString(),
+      aiProvider: provider,
+      aiFallbackNote: fallbackNote,
     };
   });
 
@@ -193,7 +200,7 @@ export const checkOpportunityQuality = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => qualityInput.parse(input))
   .handler(async ({ data }) => {
     const { runStructuredAI } = await import("./ai-provider.server");
-    const { raw } = await runStructuredAI({
+    const { raw, provider, fallbackNote } = await runStructuredAI({
       instructions:
         GUARDRAILS +
         " You are running a publication quality gate for an opportunity listing. Be strict about vague eligibility, placeholder text, missing application instructions and unclear deadlines.",
@@ -233,9 +240,10 @@ export const checkOpportunityQuality = createServerFn({ method: "POST" })
                 `Application: ${data.applicationInfo}\nVerification: ${data.verification}`,
     });
 
-    return JSON.parse(raw) as {
+    const parsed = JSON.parse(raw) as {
       status: string;
       summary: string;
       issues: { problem: string; whyItMatters: string; suggestedFix: string; severity: string }[];
     };
+    return { ...parsed, aiProvider: provider, aiFallbackNote: fallbackNote };
   });

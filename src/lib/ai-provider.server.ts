@@ -20,8 +20,12 @@ export const BEDROCK_MODEL_ID = "apac.anthropic.claude-sonnet-4-20250514-v1:0";
 
 export type AiProvider = "bedrock" | "lovable";
 
+/**
+ * Amazon Bedrock is attempted first for every AI feature. Set VC_AI_PROVIDER to
+ * "lovable" to pin the fallback provider instead.
+ */
 export function selectedProvider(): AiProvider {
-  return process.env["VC_AI_PROVIDER"] === "bedrock" ? "bedrock" : "lovable";
+  return process.env["VC_AI_PROVIDER"] === "lovable" ? "lovable" : "bedrock";
 }
 
 function awsHeaders(extra: Record<string, string> = {}): Record<string, string> {
@@ -177,13 +181,19 @@ async function runOnLovable(req: StructuredRequest): Promise<string> {
  * selected but the call fails, the request falls back to the Lovable gateway so
  * a founder never sees a broken analysis.
  */
-export async function runStructuredAI(req: StructuredRequest): Promise<{ raw: string; provider: AiProvider }> {
+export async function runStructuredAI(
+  req: StructuredRequest,
+): Promise<{ raw: string; provider: AiProvider; fallbackNote: string | null }> {
+  let fallbackNote: string | null = null;
+
   if (selectedProvider() === "bedrock") {
     try {
-      return { raw: await runOnBedrock(req), provider: "bedrock" };
+      return { raw: await runOnBedrock(req), provider: "bedrock", fallbackNote: null };
     } catch (error) {
       console.error("Bedrock request failed, falling back to the Lovable gateway:", error);
+      fallbackNote =
+        "Amazon Bedrock could not be reached for this request, so the analysis ran on the backup AI provider.";
     }
   }
-  return { raw: await runOnLovable(req), provider: "lovable" };
+  return { raw: await runOnLovable(req), provider: "lovable", fallbackNote };
 }

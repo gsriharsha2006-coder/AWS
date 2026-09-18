@@ -105,6 +105,8 @@ export type IdeaAnalysis = {
   questions: string[];
   validationActions: string[];
   generatedAt: string;
+  aiProvider?: string;
+  aiFallbackNote?: string | null;
 };
 
 export type ReadinessReport = {
@@ -118,6 +120,8 @@ export type ReadinessReport = {
   moatNote: string;
   priorities: string[];
   generatedAt: string;
+  aiProvider?: string;
+  aiFallbackNote?: string | null;
 };
 
 export type ApplicationStatus =

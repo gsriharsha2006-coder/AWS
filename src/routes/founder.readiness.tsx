@@ -141,6 +141,11 @@ function Readiness() {
         <>
           <section>
             <SectionHeading eyebrow={`AI assessment · ${new Date(r.generatedAt).toLocaleString()}`} title="Scores" />
+            {r.aiFallbackNote ? (
+              <p className="mb-4 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+                {r.aiFallbackNote}
+              </p>
+            ) : null}
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {r.scores.map((s) => (
                 <ScoreBar key={s.key} label={s.label} score={s.score} explanation={s.explanation} />
