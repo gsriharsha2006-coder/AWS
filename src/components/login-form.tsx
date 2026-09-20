@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Field, FormNotice, PasswordField, inputClass, useAfterAuthRedirect } from "@/components/auth-kit";
 import { supabase } from "@/integrations/supabase/client";
 import { getIdentity } from "@/lib/auth.functions";
-import { friendlyAuthError } from "@/lib/auth-messages";
+import { friendlyAuthError, logAuthError } from "@/lib/auth-messages";
 
 export function LoginForm({ role }: { role: "founder" | "partner" }) {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ export function LoginForm({ role }: { role: "founder" | "partner" }) {
       }
       redirectAfterAuth(identity.role, identity.onboarded);
     } catch (error) {
+      logAuthError("sign-in", error);
       setNotice(friendlyAuthError(error, "We couldn't sign you in. Please try again."));
     } finally {
       setBusy(false);

@@ -10,7 +10,7 @@ import {
   passwordIssues,
 } from "@/components/auth-kit";
 import { supabase } from "@/integrations/supabase/client";
-import { friendlyAuthError } from "@/lib/auth-messages";
+import { friendlyAuthError, logAuthError } from "@/lib/auth-messages";
 import { setPendingRole } from "@/lib/use-identity";
 
 export const Route = createFileRoute("/auth/founder/signup")({
@@ -70,6 +70,7 @@ function FounderSignup() {
         search: { email: form.email.trim(), role: "founder" as const },
       });
     } catch (error) {
+      logAuthError("founder-signup", error);
       setNotice(friendlyAuthError(error, "We couldn't create the account. Please try again."));
     } finally {
       setBusy(false);

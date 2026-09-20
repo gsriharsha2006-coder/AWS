@@ -1,16 +1,25 @@
-
 version: 1
 frontend:
   phases:
     preBuild:
       commands:
-        - npm install -g bun
-        - bun install --frozen-lockfile
+        - npm ci
+        # The browser bundle needs these baked in at build time. Set them in the
+        # Amplify console under App settings -> Environment variables.
+        # Only publishable values belong here — never a service-role or secret key.
+        - |
+          cat > .env <<EOF
+          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+          VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
+          VITE_SUPABASE_PROJECT_ID=$VITE_SUPABASE_PROJECT_ID
+          EOF
+        - node -e "const s=require('fs').readFileSync('.env','utf8');if(!/VITE_SUPABASE_URL=https/.test(s)){console.error('Missing VITE_SUPABASE_* environment variables in the Amplify app settings.');process.exit(1)}"
     build:
       commands:
-        - NITRO_PRESET=aws_amplify bun run build
+        - npm run build
   artifacts:
-    baseDirectory: .amplify-hosting
+    # Static browser bundle + prerendered index.html
+    baseDirectory: dist/client
     files:
       - '**/*'
   cache:
