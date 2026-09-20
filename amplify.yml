@@ -3,25 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
-        # The browser bundle needs these baked in at build time. Set them in the
-        # Amplify console under App settings -> Environment variables.
-        # Only publishable values belong here — never a service-role or secret key.
-        - |
-          cat > .env <<EOF
-          VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-          VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
-          VITE_SUPABASE_PROJECT_ID=$VITE_SUPABASE_PROJECT_ID
-          SUPABASE_URL=$VITE_SUPABASE_URL
-          SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
-          EOF
-        - node -e "const required=['VITE_SUPABASE_URL','VITE_SUPABASE_PUBLISHABLE_KEY','VITE_SUPABASE_PROJECT_ID'];const missing=required.filter((name)=>!process.env[name]);if(missing.length){console.error('Missing required Amplify environment variables: '+missing.join(', '));process.exit(1)}console.log('Amplify authentication environment check passed.')"
+        - npm install -g bun
+        - bun install --frozen-lockfile
     build:
       commands:
-        - npm run build
+        - NITRO_PRESET=aws_amplify bun run build
   artifacts:
-    # Static browser bundle + prerendered index.html
-    baseDirectory: dist/client
+    baseDirectory: .amplify-hosting
     files:
       - '**/*'
   cache:
