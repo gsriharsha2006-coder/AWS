@@ -10,7 +10,7 @@ function isNewSupabaseApiKey(value: string): boolean {
 function normalizeEnvironmentValue(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
   if (!trimmed) return undefined;
-  return trimmed.replace(/^(['"])(.*)\1$/, '$2').trim();
+  return trimmed.replace(/^['"]|['"]$/g, '').trim();
 }
 
 function createSupabaseFetch(supabaseKey: string): typeof fetch {
