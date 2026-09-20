@@ -12,8 +12,10 @@ frontend:
           VITE_SUPABASE_URL=$VITE_SUPABASE_URL
           VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
           VITE_SUPABASE_PROJECT_ID=$VITE_SUPABASE_PROJECT_ID
+          SUPABASE_URL=$VITE_SUPABASE_URL
+          SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
           EOF
-        - node -e "const s=require('fs').readFileSync('.env','utf8');if(!/VITE_SUPABASE_URL=https/.test(s)){console.error('Missing VITE_SUPABASE_* environment variables in the Amplify app settings.');process.exit(1)}"
+        - node -e "const required=['VITE_SUPABASE_URL','VITE_SUPABASE_PUBLISHABLE_KEY','VITE_SUPABASE_PROJECT_ID'];const missing=required.filter((name)=>!process.env[name]);if(missing.length){console.error('Missing required Amplify environment variables: '+missing.join(', '));process.exit(1)}console.log('Amplify authentication environment check passed.')"
     build:
       commands:
         - npm run build

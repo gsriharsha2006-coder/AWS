@@ -14,6 +14,10 @@ export function friendlyAuthError(raw: unknown, fallback: string): string {
 
   if (message.includes("missing supabase environment"))
     return "This copy of the app isn't connected to its backend, so accounts can't be created here. Use the main site, or ask the site owner to add the backend settings to this deployment.";
+  if (message.includes("invalid api key") || message.includes("invalid supabase url"))
+    return "This site isn't connected to the correct account service. Please contact the site owner.";
+  if (message.includes("redirect") && (message.includes("allow") || message.includes("invalid")))
+    return "Sign-in could not return to this site. Please contact the site owner to approve this site's sign-in address.";
   if (message.includes("invalid login credentials"))
     return "That email and password combination didn't match an account. Check both and try again.";
   if (message.includes("email not confirmed"))
@@ -28,6 +32,8 @@ export function friendlyAuthError(raw: unknown, fallback: string): string {
     return "Too many verification emails have been sent in the last hour. Wait a little while, then try again.";
   if (message.includes("database error") || message.includes("unexpected_failure"))
     return "Your account could not be set up on our side. Please try again in a moment — if it keeps happening, contact support.";
+  if (message.includes("row-level security") || message.includes("permission denied"))
+    return "Your account was created, but its profile could not be opened. Please sign in again or contact support.";
   if (message.includes("token has expired") || message.includes("expired"))
     return "That code has expired. Request a new one and enter it within the next few minutes.";
   if (message.includes("invalid") && message.includes("token"))

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth-kit";
 import { supabase } from "@/integrations/supabase/client";
 import { claimRole, getIdentity } from "@/lib/auth.functions";
+import { logAuthError } from "@/lib/auth-messages";
 import { readPendingRole } from "@/lib/use-identity";
 
 export const Route = createFileRoute("/auth/callback")({
@@ -59,7 +60,8 @@ function AuthCallback() {
       }
     }
 
-    void finish().catch(() => {
+    void finish().catch((error) => {
+      logAuthError("callback", error);
       setMessage("Something went wrong finishing sign-in. Please try signing in again.");
     });
 
