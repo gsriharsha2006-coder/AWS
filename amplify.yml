@@ -1,13 +1,14 @@
+
 version: 1
 frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - npm install -g bun
+        - bun install --frozen-lockfile
     build:
       commands:
-        # Nitro emits the Amplify Hosting bundle into .amplify-hosting
-        - NITRO_PRESET=aws_amplify npm run build
+        - NITRO_PRESET=aws_amplify bun run build
   artifacts:
     baseDirectory: .amplify-hosting
     files:
